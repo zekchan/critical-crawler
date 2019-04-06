@@ -8,7 +8,7 @@ const prom = require('prom-client');
 const crawlingTime = new prom.Histogram({
   name: 'cc_crawling_time',
   help: 'Crawling time',
-  buckets: prom.linearBuckets(2000, 2000, 10)
+  buckets: prom.linearBuckets(5, 1, 10)
 });
 
 const DEBUG = process.env.DEBUG === 'true'

@@ -14,7 +14,7 @@ prom.collectDefaultMetrics({ prefix: 'cc_' })
 const responseTime = new prom.Histogram({
   name: 'cc_response_time',
   help: 'Response time',
-  buckets: prom.linearBuckets(0, 5, 10)
+  buckets: prom.linearBuckets(0, 0.005, 10)
 });
 const cacheHit = new prom.Counter({
   name: 'cc_cache_hit',
