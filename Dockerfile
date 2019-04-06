@@ -6,11 +6,8 @@ ENV CHROME_BIN="/usr/bin/chromium-browser"\
 EXPOSE 3000
 CMD ["node", "index"]
 RUN set -x \
-  && apk update \
-  && apk upgrade \
+  && apk update --no-cache \
   && apk add --no-cache \
-  udev \
-  ttf-freefont \
   chromium
 COPY package.json yarn.lock ./
 RUN yarn

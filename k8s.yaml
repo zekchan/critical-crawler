@@ -40,12 +40,20 @@ spec:
     spec:
       containers:
       - name: critical-crawler
-        image: zkchn/critical-crawler
+        image: zkchn/critical-css-crawler
         ports:
         - containerPort: 3000   
         env:
         - name: REDIS
           value: //redis:6379
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000  
 ---
 apiVersion: apps/v1beta2
 kind: Deployment

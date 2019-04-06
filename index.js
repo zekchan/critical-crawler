@@ -16,7 +16,7 @@ const R = {
 
 const app = new Koa()
 PROCESSING = 'PROCESSING'
-app.use(route.get('/_health', ctx => ctx.body = 'OK'))
+app.use(route.get('/healthz', ctx => ctx.body = 'OK'))
 app.use(bodyParser())
 app.use(route.post('/', async (ctx) => {
   const { headers, version, url } = ctx.request.body
