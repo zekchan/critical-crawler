@@ -27,6 +27,7 @@ app.use(route.post('/', async (ctx) => {
   if (!mayBeCss || (mayBeCss === PROCESSING)) {
     ctx.status = 404;
     ctx.body = 'Preparing css';
+    return
   }
   if (!mayBeCss) {
     await R.set(key, PROCESSING)
