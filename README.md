@@ -12,4 +12,5 @@ Docker-compose and k8s configrations can be found in this repo.
 Main entry point. It responses 404 when there are no critical css in a cache, and 200 with critical css in a body. After the first request
 of page service starts preparing critical css. It takes about 7 seconds and then service starts serving styles.
   
-  
+## Integration with your site
+TODO  

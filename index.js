@@ -27,6 +27,9 @@ app.use(route.post('/', async (ctx) => {
   if (!mayBeCss || (mayBeCss === PROCESSING)) {
     ctx.status = 404;
     ctx.body = 'Preparing css';
+  }
+  if (!mayBeCss) {
+    await R.set(key, PROCESSING)
     t.push(async (cb) => {
       try {
         await R.set(key, await crawlPage(url, headers, key))
@@ -36,7 +39,6 @@ app.use(route.post('/', async (ctx) => {
       }
       cb()
     })
-    await R.set(key, PROCESSING)
   } else {
     ctx.status = 200;
     ctx.body = mayBeCss;
