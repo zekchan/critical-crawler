@@ -2,9 +2,11 @@ version: '3'
 services:
   crawler-redis:
     image: redis:5-alpine
-  critical-crawler:
-    image: crawler
-    environment:
-      REDIS: //crawler-redis:6379
-    ports:
-      - 3000:3000
+    ports: 
+      - 6379:6379
+  # critical-crawler:
+  #   image: crawler
+  #   environment:
+  #     REDIS: //crawler-redis:6379
+  #   ports:
+  #     - 3000:3000

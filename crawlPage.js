@@ -3,6 +3,13 @@ const penthouse = require('penthouse')
 const md5 = require('md5');
 const path = require('path');
 const fs = require('fs').promises
+const prom = require('prom-client');
+
+const crawlingTime = new prom.Histogram({
+  name: 'cc_crawling_time',
+  help: 'Crawling time',
+  buckets: prom.linearBuckets(2000, 2000, 10)
+});
 
 const DEBUG = process.env.DEBUG === 'true'
 const CHROME_BIN = process.env.CHROME_BIN
@@ -11,30 +18,15 @@ if (!CHROME_BIN) {
   throw new Error('CHROME_BIN env variable is mandatory!')
 }
 
-let jobsDone = 0;
-
-async function autoScroll(page) {
-  await page.evaluate(async () => {
-    await new Promise((resolve, reject) => {
-      let totalHeight = 0;
-      const distance = 100;
-      function scrollTick() {
-        const scrollHeight = document.body.scrollHeight;
-        window.scrollBy(0, distance);
-        totalHeight += distance;
-
-        if (totalHeight >= scrollHeight) {
-          return resolve();
-        }
-        requestIdleCallback(scrollTick)
-      }
-      scrollTick()
-    });
+async function waitForJSIdle(page) {
+  return  page.evaluate(() => {
+    return new Promise(resolve => {
+      requestIdleCallback(resolve)
+    })
   });
 }
-async function crawlPage(url, headers, key) {
-  const id = jobsDone
-  console.time(id)
+async function crawlPage(url, headers, key, isMobile) {
+  const end = crawlingTime.startTimer()
   const browser = await puppeteer.launch({
     headless: !DEBUG,
     ignoreHTTPSErrors: true,
@@ -52,10 +44,27 @@ async function crawlPage(url, headers, key) {
   if (headers['user-agent']) {
     await page.setUserAgent(headers['user-agent'])
   }
+  if (isMobile) {
+    await page.setViewport({
+      width: 1024,
+      height: 1000,
+      isMobile: true,
+      hasTouch: true
+    })
+  } else {
+    await page.setViewport({
+      width: 1440,
+      height: 2000,
+    })
+  }
   await page.goto(url, {
-    waitUntil: 'networkidle0'
+    waitUntil: [
+      'networkidle0',
+      'load',
+      'domcontentloaded'
+    ]
   })
-  await autoScroll(page)
+  await waitForJSIdle(page)
   const html = await page.evaluate(() => document.documentElement.outerHTML);
   await page.close()
   const allCssString = allCss.join('\n')
@@ -74,8 +83,7 @@ async function crawlPage(url, headers, key) {
   })
   await browser.close()
   await fs.unlink(fileName)
-  console.timeEnd(id)
-  jobsDone++
+  end()
   return criticalCss;
 }
 
