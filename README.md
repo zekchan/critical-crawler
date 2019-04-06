@@ -1,8 +1,12 @@
 # critical-css-crawler
-![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/zkchn/critical-css-crawler.svg)
-![Docker Build Status](https://img.shields.io/docker/build/zkchn/critical-css-crawler.svg)
+[![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/zkchn/critical-css-crawler.svg)
+![Docker Build Status](https://img.shields.io/docker/cloud/build/zkchn/critical-css-crawler.svg)](https://hub.docker.com/r/zkchn/critical-css-crawler)
+
+
 ## Requirments
 * redis
+
+
 ## Installing
 `docker run -p 3000:3000 zkchn/critical-css-crawler`
 Docker-compose and k8s configrations can be found in this repo.
