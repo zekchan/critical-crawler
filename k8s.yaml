@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: critical-crawler
+  labels:
+    app: critical-crawler
+spec:
+  type: NodePort
+  ports:
+    - port: 3000
+  selector:
+    app: critical-crawler
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  type: NodePort
+  ports:
+    - port: 6379
+  selector:
+    app: redis  
+---     
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: critical-crawler
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: critical-crawler
+  template:
+    metadata:
+      labels:
+        app: critical-crawler
+    spec:
+      containers:
+      - name: critical-crawler
+        image: zkchn/critical-crawler
+        ports:
+        - containerPort: 3000   
+        env:
+        - name: REDIS
+          value: //redis:6379
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:5-alpine
+        ports:
+        - containerPort: 6379

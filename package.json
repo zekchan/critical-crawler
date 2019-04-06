@@ -1,0 +1,21 @@
+{
+  "name": "critical-crawler",
+  "version": "1.0.0",
+  "description": "Service for crawling criticall css from page",
+  "main": "index.js",
+  "repository": "git@github.com:zekchan/critical-crawler.git",
+  "author": "Ilya Groshev",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "async-limiter": "^1.0.0",
+    "ismobilejs": "^0.5.1",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-route": "^3.2.0",
+    "md5": "^2.2.1",
+    "penthouse": "^2.0.0",
+    "puppeteer-core": "^1.14.0",
+    "redis": "^2.8.0"
+  }
+}
