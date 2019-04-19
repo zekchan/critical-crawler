@@ -33,11 +33,14 @@ async function crawlPage(url, headers, key, isMobile) {
     args: ['--disable-setuid-sandbox', '--no-sandbox'],
     executablePath: process.env.CHROME_BIN
   })
+  console.log('Browser launched')
   const page = await browser.newPage()
+  console.log('Tab created')
   const allCss = []
   page.on('response', async response => {
     if (response.request().resourceType() === 'stylesheet') {
       allCss.push(await response.text())
+      console.log('New CSS')
     }
   });
   await page.setExtraHTTPHeaders(headers)
@@ -57,6 +60,8 @@ async function crawlPage(url, headers, key, isMobile) {
       height: 2000,
     })
   }
+  
+  console.log('Opening page')
   await page.goto(url, {
     waitUntil: [
       'networkidle0',
@@ -64,8 +69,11 @@ async function crawlPage(url, headers, key, isMobile) {
       'domcontentloaded'
     ]
   })
+  console.log('Page opened')
   await waitForJSIdle(page)
+  console.log('Page idle')
   const html = await page.evaluate(() => document.documentElement.outerHTML);
+  console.log('Html got')
   await page.close()
   const allCssString = allCss.join('\n')
   const fileName = path.resolve(__dirname, `${md5(key)}.html`)
@@ -81,7 +89,11 @@ async function crawlPage(url, headers, key, isMobile) {
       getBrowser: () => browser
     }
   })
+  
+  console.log('Critical css got')
   await browser.close()
+  
+  console.log('Browser closed')
   await fs.unlink(fileName)
   end()
   return criticalCss;
