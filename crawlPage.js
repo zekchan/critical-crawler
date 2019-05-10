@@ -41,6 +41,7 @@ async function crawlPage(url, headers, key, isMobile) {
     if (response.request().resourceType() === 'stylesheet') {
       allCss.push(await response.text())
       console.log('New CSS')
+      console.log(response.url())
     }
   });
   await page.setExtraHTTPHeaders(headers)
@@ -69,11 +70,13 @@ async function crawlPage(url, headers, key, isMobile) {
       'domcontentloaded'
     ]
   })
+  await new Promise(resolve => setTimeout(resolve, 10000))
   console.log('Page opened')
   await waitForJSIdle(page)
   console.log('Page idle')
   const html = await page.evaluate(() => document.documentElement.outerHTML);
   console.log('Html got')
+  console.log(html)
   await page.close()
   const allCssString = allCss.join('\n')
   const fileName = path.resolve(__dirname, `${md5(key)}.html`)
