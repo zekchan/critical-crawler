@@ -60,10 +60,10 @@ app.use(async (ctx, next) => {
 })
 app.use(bodyParser())
 app.use(route.post('/', async (ctx) => {
-  const { headers, version, url } = ctx.request.body
+  const { headers, version, url, key } = ctx.request.body
   const deviceInfo = isMobileJs(headers['user-agent'])
   const deviceName = (deviceInfo.phone && 'phone') || (deviceInfo.tablet && 'tablet') || 'desktop'
-  const key = `${url}-${version}-${deviceName}`
+  const key = `${key || url}-${version}-${deviceName}`
   const mayBeCss = await R.get(key)
   if (mayBeCss && (mayBeCss !== PROCESSING)) {
     ctx.status = 200;
