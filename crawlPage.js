@@ -14,6 +14,16 @@ const crawlingTime = new prom.Histogram({
 const DEBUG = process.env.DEBUG === 'true'
 const CHROME_BIN = process.env.CHROME_BIN
 
+const MOBILE_SIZES = {
+  width: 400,
+  height: 800
+}
+
+const DESKTOP_SIZES = {
+  width: 1440,
+  height: 900
+}
+
 if (!CHROME_BIN) {
   throw new Error('CHROME_BIN env variable is mandatory!')
 }
@@ -87,10 +97,12 @@ async function crawlPage(url, headers, key, isMobile) {
     userAgent: headers['user-agent'],
     customPageHeaders: headers,
     cssString: allCssString,
-    renderWaitTime: 1000,
+    renderWaitTime: 4000,
+    blockJSRequests: false,
     puppeteer: {
       getBrowser: () => browser
-    }
+    },
+    ...(isMobile ? MOBILE_SIZES : DESKTOP_SIZES)
   })
   
   console.log('Critical css got')
