@@ -109,4 +109,4 @@ async function crawlPage(url, headers, key, isMobile) {
     return criticalCss;
 }
 
-module.exports = crawlPagew
+module.exports = crawlPage
