@@ -15,13 +15,13 @@ const DEBUG = process.env.DEBUG === 'true'
 const CHROME_BIN = process.env.CHROME_BIN
 
 const MOBILE_SIZES = {
-    width: 400,
-    height: 800
+    width: 600,
+    height: 1500
 }
 
 const DESKTOP_SIZES = {
     width: 1440,
-    height: 900
+    height: 1500
 }
 
 if (!CHROME_BIN) {
