@@ -1,4 +1,4 @@
-FROM node:11-alpine
+FROM node:12-alpine
 WORKDIR /app
 ENV CHROME_BIN="/usr/bin/chromium-browser"\
   PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true"\
