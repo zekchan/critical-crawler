@@ -80,7 +80,7 @@ app.use(route.post('/', async(ctx) => {
             queueSize.inc()
             t.push(async(cb) => {
                 try {
-                    await R.set(key, await crawlPage(url, headers, key, deviceInfo.mobile))
+                    await R.set(key, await crawlPage(url, headers, key, deviceInfo.any))
                 } catch (e) {
                     console.error(e)
                     R.del(key)

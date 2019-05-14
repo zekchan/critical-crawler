@@ -16,12 +16,12 @@ const CHROME_BIN = process.env.CHROME_BIN
 
 const MOBILE_SIZES = {
     width: 600,
-    height: 1500
+    height: 900
 }
 
 const DESKTOP_SIZES = {
     width: 1440,
-    height: 1500
+    height: 900
 }
 
 if (!CHROME_BIN) {
@@ -81,19 +81,16 @@ async function crawlPage(url, headers, key, isMobile) {
     await waitForJSIdle(page)
     console.log('Page idle')
     const allCssString = allCss.join('\n')
-    await page.addStyleTag({ content: allCssString })
-    await page.waitFor(5000)
-    const html = await page.evaluate(() => document.documentElement.outerHTML);
+    
     console.log('Html got')
     await page.close()
-    const fileName = path.resolve(__dirname, `${md5(key)}.html`)
-    await fs.writeFile(fileName, html)
     const criticalCss = await penthouse({
-        url: `file:///${fileName}`,
+        url: url,
         keepLargerMediaQueries: true,
         userAgent: UA,
         customPageHeaders: headers,
         cssString: allCssString,
+        renderWaitTime: 10000,
         puppeteer: {
             getBrowser: () => browser
         },
@@ -104,7 +101,6 @@ async function crawlPage(url, headers, key, isMobile) {
     await browser.close()
 
     console.log('Browser closed')
-    await fs.unlink(fileName)
     end()
     return criticalCss;
 }
