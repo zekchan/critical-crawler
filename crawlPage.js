@@ -91,6 +91,7 @@ async function crawlPage(url, headers, key, isMobile) {
         customPageHeaders: headers,
         cssString: allCssString,
         renderWaitTime: 10000,
+        maxEmbeddedBase64Length: 10000,
         blockJSRequests: false,
         puppeteer: {
             getBrowser: () => browser
