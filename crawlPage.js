@@ -36,6 +36,10 @@ async function waitForJSIdle(page) {
     });
 }
 async function crawlPage(url, headers, key, isMobile) {
+    const killTimeout = setTimeout(() => {
+        console.error({ url, key, info: 'timeout' });
+        process.exit(1);
+    }, 3 * 60 * 1000);
     const end = crawlingTime.startTimer()
     const browser = await puppeteer.launch({
         headless: !DEBUG,
@@ -81,7 +85,7 @@ async function crawlPage(url, headers, key, isMobile) {
     await waitForJSIdle(page)
     console.log('Page idle')
     const allCssString = allCss.join('\n')
-    
+
     console.log('Html got')
     await page.close()
     const criticalCss = await penthouse({
@@ -103,6 +107,7 @@ async function crawlPage(url, headers, key, isMobile) {
     await browser.close()
 
     console.log('Browser closed')
+    clearTimeout(killTimeout)
     end()
     return criticalCss;
 }
