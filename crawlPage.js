@@ -35,6 +35,9 @@ async function waitForJSIdle(page) {
         })
     });
 }
+function responseIsCss(response) {
+    return response.request().resourceType() === 'stylesheet' || response.url().endsWith('.css')
+}
 async function crawlPage(url, headers, key, isMobile) {
     const killTimeout = setTimeout(() => {
         console.error({ url, key, info: 'timeout' });
@@ -52,7 +55,7 @@ async function crawlPage(url, headers, key, isMobile) {
     console.log('Tab created')
     const allCss = []
     page.on('response', async response => {
-        if (response.request().resourceType() === 'stylesheet') {
+        if (responseIsCss(response)) {
             allCss.push(await response.text())
             console.log('New CSS')
             console.log(response.url())
@@ -85,7 +88,9 @@ async function crawlPage(url, headers, key, isMobile) {
     await waitForJSIdle(page)
     console.log('Page idle')
     const allCssString = allCss.join('\n')
-
+    if (allCss.length === 0) {
+        throw new Error('No css!')
+    }
     console.log('Html got')
     await page.close()
     const criticalCss = await penthouse({
